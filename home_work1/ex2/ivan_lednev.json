@@ -1,1 +1,1 @@
-{"response":[{"id":17828316,"first_name":"Иван","last_name":"Леднев","is_closed":false,"can_access_closed":true}]}
+{"error":{"error_code":5,"error_msg":"User authorization failed: access_token has expired.","request_params":[{"key":"api_id","value":"7500173"},{"key":"user_ids","value":"ivan_lednev"},{"key":"v","value":"5.107"},{"key":"method","value":"users.get"},{"key":"oauth","value":"1"}]}}
