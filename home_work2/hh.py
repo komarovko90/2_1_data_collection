@@ -3,6 +3,7 @@ import requests
 from pprint import pprint
 import pandas as pd
 import re
+import json
 
 def split_salary(text):
     """
@@ -65,29 +66,30 @@ while True:
     soup = bs(response.text, 'html.parser')
 
     vacancy_block = soup.find('div', {'class': 'vacancy-serp'})
-    vacancy_list = vacancy_block.findChildren(recursive=False)
+    vacancy_list = vacancy_block.findChildren('div', attrs={'class':'vacancy-serp-item'}) #findChildren(recursive=False)
+    child = vacancy_block.findChild()
     for vacancy in vacancy_list:  # vacancy_list:
         vacancies_data = {}
         # проверяем не реклама ли
-        if vacancy['class'].count('serp-special') == 0:
-            tag = vacancy.find('a', {'data-qa':'vacancy-serp__vacancy-title'})
-            link = tag['href']
-            name = tag.text
-            max_salary = None
-            min_salary = None
-            currency = None
-            salary_tag = vacancy.find('div', {'class':'vacancy-serp-item__sidebar'}).findChild()
-            if salary_tag:
-                split_salary(salary_tag.text)
+        # if vacancy['class'].count('serp-special') == 0:
+        tag = vacancy.find('a', {'data-qa':'vacancy-serp__vacancy-title'})
+        link = re.split(r'\?', tag['href'])[0]
+        name = tag.text
+        max_salary = None
+        min_salary = None
+        currency = None
+        salary_tag = vacancy.find('div', {'class':'vacancy-serp-item__sidebar'}).findChild()
+        if salary_tag:
+            split_salary(salary_tag.text)
 
-            vacancies_data['Name'] = name
-            vacancies_data['Link'] = link
-            vacancies_data['Min salary'] = max_salary
-            vacancies_data['Max salary'] = min_salary
-            vacancies_data['Currency'] = currency
-            vacancies_data['Source link'] = main_link
+        vacancies_data['Name'] = name
+        vacancies_data['Link'] = link
+        vacancies_data['Min salary'] = min_salary
+        vacancies_data['Max salary'] = max_salary
+        vacancies_data['Currency'] = currency
+        vacancies_data['Source link'] = main_link
 
-            vacancies.append(vacancies_data)
+        vacancies.append(vacancies_data)
 
     page_next = soup.find('a', {'data-qa':'pager-next'})
     if page_next:
@@ -99,4 +101,8 @@ while True:
 
 df = pd.DataFrame(vacancies, columns=['Name', 'Link', 'Min salary', 'Max salary', 'Currency', 'Source link'])
 pprint(df)
+
+# with open(prof + '.json', 'w', encoding='utf-8') as f:
+#     json.dump(vacancies, f)
+
 # df.to_csv('df.csv', encoding='utf-8')
