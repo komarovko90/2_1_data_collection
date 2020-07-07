@@ -3,7 +3,7 @@ from scrapy.settings import Settings                #Импортируем кл
 
 from booksproject import settings                      #Наши настройки
 from booksproject.spiders.labirint import LabirintSpider
-from booksproject.spiders.labirint import Book24Spider
+from booksproject.spiders.book import Book24Spider
 
 if __name__ == '__main__':
     crawler_settings = Settings()

@@ -18,3 +18,5 @@ class BooksprojectItem(scrapy.Item):
     book_price_sale = scrapy.Field()
     book_rating = scrapy.Field()
     book_id = scrapy.Field()
+    update_at = scrapy.Field()
+
